@@ -1,8 +1,6 @@
-from django.core.exceptions import ValidationError
 from django.forms import ModelForm, BooleanField
 
 from recipient.models import Recipient
-from django.conf import settings
 
 
 class StyleFormMixin:

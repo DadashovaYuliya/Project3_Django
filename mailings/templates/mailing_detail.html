@@ -11,7 +11,14 @@
                 <div class="card-body">
                     <h5 class="card-title">{{ mailing.message }}</h5>
                     <p class="card-text">Дата и время первой отправки: {{ mailing.first_dispatch }}</p>
-                    <p class="card-text">Получатели: {{ mailing.recipients }}</p>
+                    <p class="card-text">Получатели:</p>
+                    <ul>
+                        {% for recipient in mailing.recipients.all %}
+                            <li>{{ recipient.email }}</li>
+                        {% empty %}
+                            <li>Нет получателей</li>
+                        {% endfor %}
+                    </ul>
                     <a href="{% url 'mailings:mailing_list' %}" class="btn btn-primary">Назад</a>
                 </div>
             </div>

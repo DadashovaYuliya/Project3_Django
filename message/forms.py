@@ -3,7 +3,6 @@ from django.forms import ModelForm, BooleanField
 from message.models import Message
 
 
-
 class StyleFormMixin:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

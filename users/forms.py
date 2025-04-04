@@ -9,6 +9,7 @@ class UserRegisterForm(StyleFormMixin, UserCreationForm):
         model = User
         fields = ['email', 'password1', 'password2']
 
+
 class CustomPasswordResetForm(PasswordResetForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

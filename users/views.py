@@ -1,14 +1,16 @@
 import secrets
 
-from django.conf import settings
-from django.contrib.auth.views import PasswordResetView
+from django.contrib import messages
+
 from django.core.mail import send_mail
+from django.http import HttpRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView
+from django.views import View
+from django.views.generic import CreateView, ListView
 
 from config.settings import EMAIL_HOST_USER
-from users.forms import UserRegisterForm, CustomPasswordResetForm
+from users.forms import UserRegisterForm
 from users.models import User
 
 
@@ -33,17 +35,32 @@ class UserCreateView(CreateView):
         )
         return super().form_valid(form)
 
+
 def email_verification(request, token):
     user = get_object_or_404(User, token=token)
     user.is_active = True
     user.save()
     return redirect('users:login')
 
-# class CustomPasswordResetView(PasswordResetView):
-#     """Восстановление пароля"""
-#     template_name = 'users/password_reset_request.html'
-#     form_class = CustomPasswordResetForm
-#     success_url = reverse_lazy('users:password_reset_done')
-#     title = "Сброс пароля"
-#     email_template_name = 'users/password_reset_email.html'
-#     from_email = settings.EMAIL_HOST_USER
+
+class UserBlockView(View):
+    permission_required = "users.can_block_user"
+
+    def post(self, request: HttpRequest, *args: str, **kwargs):
+        user = get_object_or_404(User, email=self.kwargs.get("email"))
+        if not user.is_active:
+            user.is_active = True
+            user.save()
+            messages.success(self.request, "Пользователь успешно разблокирован!")
+        else:
+            user.is_active = False
+            user.save()
+            messages.success(self.request, "Пользователь успешно заблокирован!")
+        return redirect("users:users_list")
+
+
+class UserListView(ListView):
+    model = User
+    template_name = "users/users_list.html"
+    permission_required = "can_see_all_users"
+    context_object_name = "users"

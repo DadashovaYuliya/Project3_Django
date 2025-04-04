@@ -14,9 +14,26 @@
             <div class="card shadow-sm">
                 <div class="card-body">
                     <h5 class="card-title">{{ mailing.message }} / {{ mailing.first_dispatch }}</h5>
-                    <a href="{% url 'mailings:mailing_detail' mailing.pk %}" class="btn btn-outline-primary">Подробнее</a>
+                    <p class="card-text">Статус: {{ mailing.status }}</p>
+                    {% if mailing.owner == user or is_manager %}
+                    {% if mailing.status != "CO" %}
+                    <form action="{% url 'mailings:mailing_stop' mailing.pk %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-danger btn-sm">Отключить рассылку</button>
+                    </form>
+                    {% endif %}
+                    {% endif %}
+                    {% if mailing.owner == user %}
+                    <form action="{% url 'mailings:send_mailing' mailing.pk %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-primary">Разослать вручную</button>
+                    </form>
+                    {% endif %}
+                    <a href="{% url 'mailings:mailing_detail' mailing.pk %}"
+                       class="btn btn-outline-primary">Подробнее</a>
                     <a href="{% url 'mailings:mailing_edit' mailing.pk %}" class="btn btn-outline-secondary ml-3">Редактировать</a>
-                    <a href="{% url 'mailings:mailing_delete' mailing.pk %}" class="btn btn-outline-danger ml-1">Удалить</a>
+                    <a href="{% url 'mailings:mailing_delete' mailing.pk %}"
+                       class="btn btn-outline-danger ml-1">Удалить</a>
                 </div>
             </div>
         </div>
