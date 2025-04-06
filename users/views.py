@@ -62,5 +62,5 @@ class UserBlockView(View):
 class UserListView(ListView):
     model = User
     template_name = "users/users_list.html"
-    permission_required = "can_see_all_users"
+    permission_required = "view_user"
     context_object_name = "users"
