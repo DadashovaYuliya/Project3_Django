@@ -7,6 +7,9 @@ from mailings.models import Mailing, MailingAttempt
 
 def send_mailing(mailing):
     recipients = mailing.recipients.all()
+    successful_attempts = 0
+    total_recipients = recipients.count()
+
     for recipient in recipients:
         try:
             send_mail(
@@ -21,6 +24,7 @@ def send_mailing(mailing):
                 mail_response='Сообщение отправлено',
                 mailing=mailing,
             )
+            successful_attempts += 1
             print(
                 f'Сообщение {mailing.message.subject} успешно отправлено на почту {recipient.email}'
             )
@@ -33,6 +37,12 @@ def send_mailing(mailing):
             )
             print(str(e))
 
+    if successful_attempts > 0:
+        mailing.status = Mailing.LAUNCHED
+        if not mailing.first_dispatch:
+            mailing.first_dispatch = timezone.now()
+
+    mailing.save()
 
 class Command(BaseCommand):
     help = 'Send messages'

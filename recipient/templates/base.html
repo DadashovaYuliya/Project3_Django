@@ -15,6 +15,14 @@
     </style>
 </head>
 <body>
+<div class="container pt-md-5 pb-md-4">
+        {% if messages %}
+            <ul class="messages">
+                {% for msg in messages %}
+                    <li {% if msg.tags %} class="{{ msg.tags }}"{% endif %}>{{ msg }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
 
 {% include 'includes/inc_menu.html' %}
 

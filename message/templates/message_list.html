@@ -9,17 +9,19 @@
 
 <div class="container">
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-        {% for message in messages %}
-        <div class="col">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">{{ message.subject }}</h5>
-                    <a href="{% url 'message:message_detail' message.pk %}" class="btn btn-outline-primary">Подробнее</a>
-                    <a href="{% url 'message:message_edit' message.pk %}" class="btn btn-outline-secondary ml-3">Редактировать</a>
-                    <a href="{% url 'message:message_delete' message.pk %}" class="btn btn-outline-danger ml-1">Удалить</a>
+        {% for message in mail_messages %}
+            {% if message.owner == user %}
+            <div class="col">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ message.subject }}</h5>
+                        <a href="{% url 'message:message_detail' message.pk %}" class="btn btn-outline-primary">Подробнее</a>
+                        <a href="{% url 'message:message_edit' message.pk %}" class="btn btn-outline-secondary ml-3">Редактировать</a>
+                        <a href="{% url 'message:message_delete' message.pk %}" class="btn btn-outline-danger ml-1">Удалить</a>
+                    </div>
                 </div>
             </div>
-        </div>
+            {% endif %}
         {% endfor %}
     </div>
 </div>

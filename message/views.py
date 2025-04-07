@@ -11,16 +11,16 @@ from message.models import Message
 class MessageListView(ListView):
     model = Message
     template_name = 'message_list.html'
-    context_object_name = 'messages'
+    context_object_name = 'mail_messages'
 
 
-class MessageDetailView(DetailView, LoginRequiredMixin):
+class MessageDetailView(LoginRequiredMixin, DetailView):
     model = Message
     template_name = 'message_detail.html'
     context_object_name = 'message'
 
 
-class MessageCreateView(CreateView, LoginRequiredMixin):
+class MessageCreateView(LoginRequiredMixin, CreateView):
     model = Message
     form_class = MessageForm
     template_name = 'add_message.html'
@@ -34,7 +34,7 @@ class MessageCreateView(CreateView, LoginRequiredMixin):
         return super().form_valid(form)
 
 
-class MessageUpdateView(UpdateView, LoginRequiredMixin):
+class MessageUpdateView(LoginRequiredMixin, UpdateView):
     model = Message
     form_class = MessageForm
     template_name = 'add_message.html'
@@ -47,7 +47,7 @@ class MessageUpdateView(UpdateView, LoginRequiredMixin):
         return HttpResponseForbidden('Вы не можете редактировать сообщения.')
 
 
-class MessageDeleteView(DeleteView, LoginRequiredMixin):
+class MessageDeleteView(LoginRequiredMixin, DeleteView):
     model = Message
     template_name = 'message_confirm_delete.html'
     success_url = reverse_lazy('message:message_list')

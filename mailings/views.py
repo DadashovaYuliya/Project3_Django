@@ -4,6 +4,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.urls import reverse
 from django.contrib import messages
+
+from message.models import Message
 from .management.commands.send_message import send_mailing
 from django.views import View
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -31,13 +33,13 @@ class MailingListView(ListView):
         return context
 
 
-class MailingDetailView(DetailView, LoginRequiredMixin):
+class MailingDetailView(LoginRequiredMixin, DetailView):
     model = Mailing
     template_name = 'mailing_detail.html'
     context_object_name = 'mailing'
 
 
-class MailingCreateView(CreateView, LoginRequiredMixin):
+class MailingCreateView(LoginRequiredMixin, CreateView):
     model = Mailing
     form_class = MailingForm
     template_name = 'add_mailing.html'
@@ -50,8 +52,15 @@ class MailingCreateView(CreateView, LoginRequiredMixin):
         mailing.save()
         return super().form_valid(form)
 
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        owner = self.request.user
+        form.fields['recipients'].queryset = Recipient.objects.filter(owner=owner)
+        form.fields['message'].queryset = Message.objects.filter(owner=owner)
+        return form
 
-class MailingUpdateView(UpdateView, LoginRequiredMixin):
+
+class MailingUpdateView(LoginRequiredMixin, UpdateView):
     model = Mailing
     form_class = MailingForm
     template_name = 'add_mailing.html'
@@ -63,8 +72,15 @@ class MailingUpdateView(UpdateView, LoginRequiredMixin):
             return super().dispatch(request, *args, **kwargs)
         return HttpResponseForbidden('Вы не можете редактировать рассылки.')
 
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        owner = self.request.user
+        form.fields['recipients'].queryset = Recipient.objects.filter(owner=owner)
+        form.fields['message'].queryset = Message.objects.filter(owner=owner)
+        return form
 
-class MailingDeleteView(DeleteView, LoginRequiredMixin):
+
+class MailingDeleteView(LoginRequiredMixin, DeleteView):
     model = Mailing
     template_name = 'mailing_confirm_delete.html'
     success_url = reverse_lazy('mailings:mailing_list')

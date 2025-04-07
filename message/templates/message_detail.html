@@ -11,6 +11,7 @@
                 <div class="card-body">
                     <h5 class="card-title">{{ message.subject }}</h5>
                     <p class="card-text">Текст письма: {{ message.body }}</p>
+                    <p class="card-text">Владелец: {{ message.owner }}</p>
                     <a href="{% url 'message:message_list' %}" class="btn btn-primary">Назад</a>
                 </div>
             </div>

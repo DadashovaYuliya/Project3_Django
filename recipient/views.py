@@ -19,13 +19,13 @@ class RecipientListView(ListView):
         return Recipient.objects.filter(owner=self.request.user)
 
 
-class RecipientDetailView(DetailView, LoginRequiredMixin):
+class RecipientDetailView(LoginRequiredMixin, DetailView):
     model = Recipient
     template_name = 'recipient_detail.html'
     context_object_name = 'recipient'
 
 
-class RecipientCreateView(CreateView, LoginRequiredMixin):
+class RecipientCreateView(LoginRequiredMixin, CreateView):
     model = Recipient
     form_class = RecipientForm
     template_name = 'add_recipient.html'
@@ -39,7 +39,7 @@ class RecipientCreateView(CreateView, LoginRequiredMixin):
         return super().form_valid(form)
 
 
-class RecipientUpdateView(UpdateView, LoginRequiredMixin):
+class RecipientUpdateView(LoginRequiredMixin, UpdateView):
     model = Recipient
     form_class = RecipientForm
     template_name = 'add_recipient.html'
@@ -52,7 +52,7 @@ class RecipientUpdateView(UpdateView, LoginRequiredMixin):
         return HttpResponseForbidden('Вы не можете редактировать получателя рассылки.')
 
 
-class RecipientDeleteView(DeleteView, LoginRequiredMixin):
+class RecipientDeleteView(LoginRequiredMixin, DeleteView):
     model = Recipient
     template_name = 'recipient_confirm_delete.html'
     success_url = reverse_lazy('recipient:recipient_list')

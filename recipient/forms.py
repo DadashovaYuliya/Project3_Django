@@ -16,4 +16,5 @@ class StyleFormMixin:
 class RecipientForm(StyleFormMixin, ModelForm):
     class Meta:
         model = Recipient
-        fields = '__all__'
+        fields = "__all__"
+        exclude = ["owner"]
